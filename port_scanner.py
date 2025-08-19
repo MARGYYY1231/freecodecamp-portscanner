@@ -1,6 +1,9 @@
 import socket
+import ipaddress
+from common_ports import ports_and_services
 
-def get_open_ports(target, port_range, verbose = False):
+
+def get_open_ports(target, port_range, verbose=False):
     open_ports = []
 
     try:
@@ -16,7 +19,6 @@ def get_open_ports(target, port_range, verbose = False):
     except Exception:
         return "Error: Invalid IP address"
 
-    
     for port in range(port_range[0], port_range[1] + 1):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         socket.setdefaulttimeout(1)
@@ -34,4 +36,4 @@ def get_open_ports(target, port_range, verbose = False):
             result += f"{port:<8}{service}\n"
         return result.strip()
     else:
-        return(open_ports)
+        return (open_ports)
