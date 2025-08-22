@@ -16,7 +16,8 @@ def get_open_ports(target, port_range, verbose=False):
             return "Error: Invalid hostname"
     else:
         try:
-            ip = str(ipaddress.ip_address(target))
+            socket.inet_aton(target)
+            ip = target
         except socket.error:
             return "Error: Invalid IP address"
 
@@ -25,5 +26,6 @@ def get_open_ports(target, port_range, verbose=False):
         s.settimeout(1)
         if (s.connect_ex((ip, port)) == 0):
             open_ports.append(port)
+        s.close()
 
     return (open_ports)
