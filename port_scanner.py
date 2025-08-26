@@ -5,11 +5,14 @@ from common_ports import ports_and_services
 
 
 def isVerbrose(open_ports, ip, hostname):
-    result = f"Open ports for {hostname} {ip}\n"
+    if hostname is None:
+        result = f"Open ports for {ip}\n"
+    else:
+        result = f"Open ports for {hostname} ({ip})\n"
     result += "PORT     SERVICE\n"
     for port in open_ports:
         service = ports_and_services.get(port, "unknown")
-        result += f"{port:<8}{service}\n"
+        result += f"{port:<9}{service}\n"
 
     return result.strip()
 
@@ -18,11 +21,12 @@ def get_open_ports(target, port_range, verbose=False):
     open_ports = []
 
     ip = None
-    hostname = target
+    hostname = None
 
     if re.search(r'[a-zA-Z]', target):
         try:
             ip = socket.gethostbyname(target)
+            hostname = target
         except socket.gaierror:
             return "Error: Invalid hostname"
     else:
