@@ -2,6 +2,9 @@ import socket
 import ipaddress
 import re
 from common_ports import ports_and_services
+"""
+This function takes an IP address and returns the hostname if it exists.
+"""
 
 
 def getHostname(ip):
@@ -12,6 +15,12 @@ def getHostname(ip):
         return None
     except socket.gaierror:
         return None
+
+
+"""
+This function takes a target (IP address or hostname) and a port range.
+It returns a string of open ports.
+"""
 
 
 def isVerbrose(open_ports, ip, hostname):
@@ -33,6 +42,7 @@ def get_open_ports(target, port_range, verbose=False):
     ip = None
     hostname = None
 
+    #Check if target is a hostname
     if re.search(r'[a-zA-Z]', target):
         try:
             ip = socket.gethostbyname(target)
@@ -40,6 +50,7 @@ def get_open_ports(target, port_range, verbose=False):
         except socket.gaierror:
             return "Error: Invalid hostname"
     else:
+        #Check if target is an IP address
         try:
             socket.inet_aton(target)
             ip = target
@@ -48,6 +59,7 @@ def get_open_ports(target, port_range, verbose=False):
         except socket.error:
             return "Error: Invalid IP address"
 
+    #Find the Open Ports
     for port in range(port_range[0], port_range[1] + 1):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(1)
@@ -55,6 +67,7 @@ def get_open_ports(target, port_range, verbose=False):
             open_ports.append(port)
         s.close()
 
+    #When verbrose is True, return a string
     if verbose:
         return isVerbrose(open_ports, ip, hostname)
 
