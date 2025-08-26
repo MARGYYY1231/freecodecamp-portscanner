@@ -4,10 +4,21 @@ import re
 from common_ports import ports_and_services
 
 
+def isVerbrose(open_ports, ip, hostname):
+    result = f"Open ports for {hostname} {ip}\n"
+    result += "PORT     SERVICE\n"
+    for port in open_ports:
+        service = ports_and_services.get(port, "unknown")
+        result += f"{port:<8}{service}\n"
+
+    return result.strip()
+
+
 def get_open_ports(target, port_range, verbose=False):
     open_ports = []
 
     ip = None
+    hostname = target
 
     if re.search(r'[a-zA-Z]', target):
         try:
@@ -27,5 +38,8 @@ def get_open_ports(target, port_range, verbose=False):
         if (s.connect_ex((ip, port)) == 0):
             open_ports.append(port)
         s.close()
+
+    if verbose:
+        return isVerbrose(open_ports, ip, hostname)
 
     return (open_ports)
