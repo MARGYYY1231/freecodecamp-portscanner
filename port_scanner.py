@@ -4,6 +4,16 @@ import re
 from common_ports import ports_and_services
 
 
+def getHostname(ip):
+    try:
+        hostname = socket.gethostbyaddr(ip)
+        return hostname[0]
+    except socket.herror:
+        return None
+    except socket.gaierror:
+        return None
+
+
 def isVerbrose(open_ports, ip, hostname):
     if hostname is None:
         result = f"Open ports for {ip}\n"
@@ -33,6 +43,8 @@ def get_open_ports(target, port_range, verbose=False):
         try:
             socket.inet_aton(target)
             ip = target
+            hostname = getHostname(ip)
+
         except socket.error:
             return "Error: Invalid IP address"
 
